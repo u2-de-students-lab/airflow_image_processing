@@ -158,3 +158,6 @@ cython_debug/
 ./airflow_home/logs/
 ./airflow_home/plugins
 
+# minio
+./minio/*
+
