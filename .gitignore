@@ -152,7 +152,7 @@ cython_debug/
 .idea/
 
 # local db folder
-./postgres_db
+./postgres_db/*
 
 # airflow data
 ./airflow_home/logs/
