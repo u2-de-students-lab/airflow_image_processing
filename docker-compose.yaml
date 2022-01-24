@@ -58,11 +58,12 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES}
     AIRFLOW__API__AUTH_BACKEND: ${AIRFLOW__API__AUTH_BACKEND}
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+    MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
   volumes:
     - ./airflow_home/dags:/opt/airflow/dags
     - ./airflow_home/logs:/opt/airflow/logs
     - ./airflow_home/plugins:/opt/airflow/plugins
-    - /var/run/docker.sock:/var/run/docker.sock
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -72,6 +73,14 @@ x-airflow-common:
       condition: service_healthy
 
 services:
+  docker-proxy:
+    image: bobrik/socat
+    command: "TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock"
+    ports:
+      - "2376:2375"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  
   postgres:
     image: postgres:13
     environment:
