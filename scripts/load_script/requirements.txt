@@ -2,7 +2,5 @@ certifi==2021.10.8
 charset-normalizer==2.0.10
 idna==3.3
 minio==7.1.2
-Pillow==9.0.0
-python-dotenv==0.19.2
 requests==2.27.0
 urllib3==1.26.7
