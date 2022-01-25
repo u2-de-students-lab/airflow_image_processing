@@ -1,15 +1,13 @@
 import argparse
 import os
-from PIL import Image
-import uuid
 from argparse import Namespace
 from datetime import datetime
 from io import BytesIO
+from PIL import Image
 from typing import List
 
 from minio import Minio
 
-# python3 src/transform.py Labrador raw-images transformed-images 2022-01-20 254 254
 
 def parse_date(date: str) -> datetime:
     parsed_date = datetime.strptime(date, "%Y-%m-%d")
@@ -19,12 +17,15 @@ def parse_date(date: str) -> datetime:
 
 def cli() -> Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument('search_request', type=str, help='help')
-    parser.add_argument('source_bucket_name', type=str, help='help')
-    parser.add_argument('load_bucket_name', type=str, help='help')
-    parser.add_argument('date', type=parse_date, help='help')
-    parser.add_argument('width', type=int, help='help')
-    parser.add_argument('height', type=int, help='help')
+    parser.add_argument('search_request', type=str, 
+                        help='Image that you want to search')
+    parser.add_argument('source_bucket_name', type=str, 
+                        help='Name of the bucket with raw images')
+    parser.add_argument('load_bucket_name', type=str, 
+                        help='Bucket name for transformed images')
+    parser.add_argument('date', type=parse_date, help='Search date')
+    parser.add_argument('width', type=int, help='New image width')
+    parser.add_argument('height', type=int, help='New image height')
 
     arguments = parser.parse_args()
 
@@ -33,7 +34,6 @@ def cli() -> Namespace:
 
 def take_images_from_bucket(search_request: str, source_bucket: str, 
                             date: datetime, client: Minio) -> List[str]:
-    
     objects = []
     prefix = (
         f'year={date.year}/month={date.month}/'
@@ -49,9 +49,13 @@ def take_images_from_bucket(search_request: str, source_bucket: str,
 def resize_image(client: Minio, bucket_object: str,
                  source_bucket: str, 
                  width: int, height: int) -> BytesIO:
-
-    file = BytesIO(client.get_object(source_bucket, bucket_object).read())
-    image = Image.open(file)
+    try:
+        file = client.get_object(source_bucket, bucket_object)
+        bytes_io_file = BytesIO(file.read())
+    finally:
+        file.close()
+        file.release_conn()
+    image = Image.open(bytes_io_file)
     new_image = image.resize((width, height))
     byte_io = BytesIO()
     new_image.save(byte_io, 'jpeg')
@@ -59,9 +63,9 @@ def resize_image(client: Minio, bucket_object: str,
     return byte_io
 
 
-def load_to_bucket(objects: list, client: Minio, 
+def load_to_bucket(objects: List[str], client: Minio, 
                    search_request: str, source_bucket: str,
-                   bucket_name: str, date: datetime, width: int, 
+                   processed_bucket: str, date: datetime, width: int, 
                    height: int) -> None:
 
     for obj in objects:
@@ -84,7 +88,7 @@ def load_to_bucket(objects: list, client: Minio,
         )
     
         client.put_object(
-            bucket_name=bucket_name,
+            bucket_name=processed_bucket,
             object_name=object_name,
             data=image,
             length=length
@@ -93,9 +97,12 @@ def load_to_bucket(objects: list, client: Minio,
 
 def main():
     client = Minio(
-        endpoint='host.docker.internal:9000',
-        secret_key=os.getenv('MINIO_SECRET_KEY'),
-        access_key=os.getenv('MINIO_ACCESS_KEY'),
+        endpoint='127.0.0.1:9000',
+        # endpoint='host.docker.internal:9000',
+        # secret_key=os.getenv('MINIO_SECRET_KEY'),
+        # access_key=os.getenv('MINIO_ACCESS_KEY'),
+        secret_key='testsecretkey',
+        access_key='testaccesskey',
         secure=False
     )
 
@@ -113,7 +120,7 @@ def main():
         client=client,
         search_request=args.search_request,
         source_bucket=args.source_bucket_name,
-        bucket_name=args.load_bucket_name,
+        processed_bucket=args.load_bucket_name,
         date=args.date,
         width=args.width,
         height=args.height
