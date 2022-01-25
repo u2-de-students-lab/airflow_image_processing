@@ -18,26 +18,27 @@ def parse_date(date: str) -> datetime:
 
 def cli() -> Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument('search_request', type=str, help='help')
-    parser.add_argument('bucket', type=str, help='help')
-    parser.add_argument('date', help='help', type=parse_date)
+    parser.add_argument('search_request', type=str,
+                        help='Images that you want wo search')
+    parser.add_argument('bucket', type=str, help='Load bucket name')
+    parser.add_argument('date', help='Search date', type=parse_date)
     list_of_arguments = parser.parse_args()
 
     return list_of_arguments
 
 
 def get_links(search_request: str, date: datetime) -> List[str]:
-    dog_images_url = {}
-
     api_url = f'https://imsea.herokuapp.com/api/1?q={search_request} {date}'
     response = get(url=api_url)
     url_response = response.json()
-    dog_images_url = url_response['results'][::2]
+
+    # Use slice because API returns 2 same links
+    dog_images_url = url_response['results'][::2] 
 
     return dog_images_url
 
 
-def load_in_bucket(list_of_urls: list, search_request: str, 
+def load_in_bucket(list_of_urls: List[str], search_request: str, 
                    bucket_name: str, date: datetime) -> None:
 
     client = Minio(
