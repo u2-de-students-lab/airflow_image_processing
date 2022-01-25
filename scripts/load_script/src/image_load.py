@@ -49,11 +49,9 @@ def load_in_bucket(list_of_urls: List[str], search_request: str,
     )
 
     for link in list_of_urls:
-        response = get(url=link)
+        response = get(url=link, stream=True)
         unique_name = str(uuid.uuid4())
-        img = BytesIO(response.content)
-        size = len(response.content)
-        img.seek(0)
+        img = response.raw
 
         object_name = (
             f'year={date.year}/month={date.month}/day={date.day}/'
@@ -64,7 +62,8 @@ def load_in_bucket(list_of_urls: List[str], search_request: str,
             bucket_name=bucket_name,
             object_name=object_name,
             data=img,
-            length=size
+            length=-1,
+            part_size=5242880
         )
 
 
