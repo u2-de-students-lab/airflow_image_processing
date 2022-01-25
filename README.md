@@ -7,7 +7,7 @@ This app does 2 things:
 
 All this this works in Docker and rules by Airflow.
 
-Docker-compose file includes airflow, redis, postgres, flowers, docker-proxy (need to give airflow permitions to work with local socker.sock) and minio images.
+Docker-compose file includes airflow, redis, postgres, flowers, docker-proxy (need to give airflow permitions to work with local docker.sock) and minio images.
 
 Each scripts has it's own Dockerfile, because of they are pretend to be DAG tasks with different parameters.
 
