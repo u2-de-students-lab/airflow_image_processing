@@ -97,12 +97,9 @@ def load_to_bucket(objects: List[str], client: Minio,
 
 def main():
     client = Minio(
-        endpoint='127.0.0.1:9000',
-        # endpoint='host.docker.internal:9000',
-        # secret_key=os.getenv('MINIO_SECRET_KEY'),
-        # access_key=os.getenv('MINIO_ACCESS_KEY'),
-        secret_key='testsecretkey',
-        access_key='testaccesskey',
+        endpoint='host.docker.internal:9000',
+        secret_key=os.getenv('MINIO_SECRET_KEY'),
+        access_key=os.getenv('MINIO_ACCESS_KEY'),
         secure=False
     )
 
