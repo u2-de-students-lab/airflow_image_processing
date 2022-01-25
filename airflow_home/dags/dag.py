@@ -1,6 +1,6 @@
 import os
-from typing import Dict, List
 from datetime import datetime
+from typing import Dict, List
 
 import yaml
 from airflow import DAG
@@ -16,6 +16,10 @@ TRANSFORM_BUCKET_NAME = 'transformed-images'
 WIDTH = '254'
 HEIGHT = '254'
 
+ENVIRONMENT={
+    'MINIO_SECRET_KEY': os.getenv('MINIO_SECRET_KEY'), 
+    'MINIO_ACCESS_KEY': os.getenv('MINIO_ACCESS_KEY')
+}
 
 def load_config_from_yaml(file_path: str) -> Dict[str, List[str]]:
     with open(file_path, 'r') as f:
@@ -40,10 +44,7 @@ def create_tasks(dag: DAG, search_request: str, search_date: str) -> None:
         docker_url='tcp://docker-proxy:2375',
         image=LOAD_SCRIPT_IMAGE,
         command=f'{search_request} {RAW_BUCKET_NAME} {search_date}',
-        environment={
-            'MINIO_SECRET_KEY': os.getenv('MINIO_SECRET_KEY'),
-            'MINIO_ACCESS_KEY': os.getenv('MINIO_ACCESS_KEY')
-        },
+        environment=ENVIRONMENT,
         dag=dag
     )
 
@@ -55,10 +56,7 @@ def create_tasks(dag: DAG, search_request: str, search_date: str) -> None:
             f'{search_request} {RAW_BUCKET_NAME} {TRANSFORM_BUCKET_NAME} '
             f'{search_date} {WIDTH} {HEIGHT}'
         ),
-        environment={
-            'MINIO_SECRET_KEY': os.getenv('MINIO_SECRET_KEY'),
-            'MINIO_ACCESS_KEY': os.getenv('MINIO_ACCESS_KEY')
-        },
+        environment=ENVIRONMENT,
         dag=dag
     )
 
@@ -69,7 +67,7 @@ def create_tasks(dag: DAG, search_request: str, search_date: str) -> None:
 with DAG(
     dag_id='airflow_image_processing',
     default_args=default_args,
-    description='Find images, crop them and load into Minio',
+    description='Find images, resize them and load into Minio',
     schedule_interval='@daily',
     start_date=datetime(2022, 1, 24, 2, 0, 0),
     catchup=False
