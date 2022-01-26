@@ -42,7 +42,7 @@ def load_in_bucket(list_of_urls: List[str], search_request: str,
                    bucket_name: str, date: datetime) -> None:
 
     client = Minio(
-        endpoint='host.docker.internal:9000',
+        endpoint='localhost:9000',
         secret_key=os.getenv('MINIO_SECRET_KEY'),
         access_key=os.getenv('MINIO_ACCESS_KEY'),
         secure=False
