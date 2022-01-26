@@ -51,11 +51,10 @@ def resize_image(client: Minio, bucket_object: str,
                  width: int, height: int) -> BytesIO:
     try:
         file = client.get_object(source_bucket, bucket_object)
-        bytes_io_file = BytesIO(file.read())
+        image = Image.open(file)
     finally:
         file.close()
         file.release_conn()
-    image = Image.open(bytes_io_file)
     new_image = image.resize((width, height))
     byte_io = BytesIO()
     new_image.save(byte_io, 'jpeg')
@@ -97,7 +96,7 @@ def load_to_bucket(objects: List[str], client: Minio,
 
 def main():
     client = Minio(
-        endpoint='host.docker.internal:9000',
+        endpoint='localhost:9000',
         secret_key=os.getenv('MINIO_SECRET_KEY'),
         access_key=os.getenv('MINIO_ACCESS_KEY'),
         secure=False
