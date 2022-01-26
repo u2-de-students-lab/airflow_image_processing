@@ -21,6 +21,8 @@ ENVIRONMENT={
     'MINIO_ACCESS_KEY': os.getenv('MINIO_ACCESS_KEY')
 }
 
+NETWORK_MODE = 'host'
+
 def load_config_from_yaml(file_path: str) -> Dict[str, List[str]]:
     with open(file_path, 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
@@ -45,7 +47,8 @@ def create_tasks(dag: DAG, search_request: str, search_date: str) -> None:
         image=LOAD_SCRIPT_IMAGE,
         command=f'{search_request} {RAW_BUCKET_NAME} {search_date}',
         environment=ENVIRONMENT,
-        dag=dag
+        dag=dag,
+        network_mode=NETWORK_MODE
     )
 
     task_2 = DockerOperator(
@@ -57,7 +60,8 @@ def create_tasks(dag: DAG, search_request: str, search_date: str) -> None:
             f'{search_date} {WIDTH} {HEIGHT}'
         ),
         environment=ENVIRONMENT,
-        dag=dag
+        dag=dag,
+        network_mode=NETWORK_MODE
     )
 
     task_dummy.set_downstream(task_1)
