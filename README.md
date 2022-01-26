@@ -11,3 +11,16 @@ Docker-compose file includes airflow, redis, postgres, flowers, docker-proxy (ne
 
 Each scripts has it's own Dockerfile, because of they are pretend to be DAG tasks with different parameters.
 
+# WARNING
+
+After cloning this repository and entering it  you should create this directories:
+>- ./airflow_home/logs
+>- ./airflow_home/plugins
+>- ./postgres_db
+
+Secondary, you should build docker containers of:
+>- ./scripts/load_script
+>- ./scripts/transform_script
+
+And last thing - you need `.env` file, which contains all environment variables from `docker-compose` file
+
