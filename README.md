@@ -31,4 +31,5 @@ And last thing - you need `.env` file, which contains all environment variables 
 Before running this project you shoild have buckets in minio to work with.
 
 This app may note work on Apple Mac machines. In this way you should change entrypoint in Minio client to `host.docker.internal`. That whould help.
+
 After app run in your project folder `postgres_db` directory whould be created. This folder used by airflow image
