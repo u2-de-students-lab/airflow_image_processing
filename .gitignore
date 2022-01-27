@@ -152,15 +152,15 @@ cython_debug/
 .idea/
 
 # local db folder
-./postgres_db
+/postgres_db
 
 # airflow data
-./airflow_home/logs/**
-./airflow_home/plugins/**
-!./airflow_home/logs/.gitkeep
-!./airflow_home/plugins/.gitkeep
+/airflow_home/logs/**
+/airflow_home/plugins/**
+!/airflow_home/logs/.gitkeep
+!/airflow_home/plugins/.gitkeep
 
 # minio
-./minio/**
-!./minio/.gitkeep
+/minio/**
+!/minio/.gitkeep
 
