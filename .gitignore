@@ -155,9 +155,12 @@ cython_debug/
 ./postgres_db
 
 # airflow data
-./airflow_home/logs/**
-./airflow_home/plugins/**
+./airflow_home/logs/*
+./airflow_home/plugins/*
+!./airflow_home/logs/.gitkeep
+!./airflow_home/plugins/.gitkeep
 
 # minio
 ./minio/*
+!./minio/.gitkeep
 
