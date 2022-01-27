@@ -16,11 +16,7 @@ Each scripts has it's own Dockerfile, because of they are pretend to be DAG task
 
 # WARNING
 
-After cloning this repository and entering it  you should create this directories:
->- ./airflow_home/logs
->- ./airflow_home/plugins
-
-Secondary, you should build docker containers of:
+You should build docker containers of:
 >- ./scripts/load_script
 >- ./scripts/transform_script
 
