@@ -159,5 +159,5 @@ cython_debug/
 ./airflow_home/plugins/**
 
 # minio
-./minio/**
+./minio/*
 
