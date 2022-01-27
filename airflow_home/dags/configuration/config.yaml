@@ -1,0 +1,12 @@
+dogs_breeds: [
+    'Labrador_Retriver',
+    'German_Shepherd',
+    'Golden_Retriever',
+    'French_Bulldogs',
+    'Bulldogs',
+    'Poodles',
+    'Beagles',
+    'Rottweilers',
+    'German_Shorthaired_Pointer',
+    'Pembroke_Welsh_Corgi'
+]
