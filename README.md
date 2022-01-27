@@ -16,11 +16,7 @@ Each scripts has it's own Dockerfile, because of they are pretend to be DAG task
 
 # WARNING
 
-After cloning this repository and entering it  you should create this directories:
->- ./airflow_home/logs
->- ./airflow_home/plugins
-
-Secondary, you should build docker containers of:
+You should build docker containers of:
 >- ./scripts/load_script
 >- ./scripts/transform_script
 
@@ -31,4 +27,4 @@ And last thing - you need `.env` file, which contains all environment variables 
 Before running this project you shoild have buckets in minio to work with.
 
 This app may note work on Apple Mac machines. In this way you should change entrypoint in Minio client to `host.docker.internal`. That whould help.
-After app run in your project folder `postgres_db` directory whould be created. This folder used by airflow image
+After app run in your project folder `postgres_db` directory whould be created.
